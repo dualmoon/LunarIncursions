@@ -5,12 +5,12 @@ plugins {
 // Change the values below this to your mods values
 // To change the project name, edit the settings.gradle file
 
-project.ext.modID = "fair.examplemod" // The unique id of your mod. Must be all lowercase and cannot use special characters.
-project.ext.modName = "Example Mod" // The display name of your mod.
-project.ext.modVersion = "1.0" // Your current builds version. Must follow the xx.xx... format.
-project.ext.gameVersion = "0.26.0" // The target game version.
-project.ext.modDescription = "Just an example mod" // Short description of what your mod is.
-project.ext.author = "Fair" // Your name
+project.ext.modID = "lgbt.neko.luna.necesse.lunarincursions" // The unique id of your mod. Must be all lowercase and cannot use special characters.
+project.ext.modName = "Lunar Incursions" // The display name of your mod.
+project.ext.modVersion = "0.1" // Your current builds version. Must follow the xx.xx... format.
+project.ext.gameVersion = "0.26.1" // The target game version.
+project.ext.modDescription = "Lorem ipsum, etc." // Short description of what your mod is.
+project.ext.author = "Ashley Luna <luna@neko.lgbt>" // Your name
 
 /**
  * When setting clientside to true, it means servers do not need this mod for clients to connect and vice versa.
@@ -28,7 +28,7 @@ project.ext.clientside = false
 //project.ext.modOptionalDependencies = ["optional.modid1", "optional.modid2"]
 
 // The path to the games install directory
-def gameDirectory = "C:/Program Files (x86)/Steam/steamapps/common/Necesse"
+def gameDirectory = "F:/SteamLibrary/steamapps/common/Necesse"
 
 // =================================================
 // ========== DO NOT EDIT BELOW THIS LINE ==========
@@ -73,7 +73,7 @@ dependencies {
 //    libDepends files("path/to/library/jar.jar")
 }
 
-task createAppID {
+tasks.register('createAppID') {
     group "necesse"
     description "Creates steam_appid.txt file"
 
@@ -82,13 +82,13 @@ task createAppID {
     }
 }
 
-task createModInfoFile(type: JavaExec) {
+tasks.register('createModInfoFile', JavaExec) {
     group "necesse"
     description "Creates the mod info file"
 
     classpath = files(gameDirectory + "/Necesse.jar")
 
-    main = "CreateModInfoFile"
+    mainClass = "CreateModInfoFile"
     args "-file", "${sourceSets.main.java.outputDir}/mod.info",
             "-id", "${project.ext.modID}",
             "-name", "${project.ext.modName}",
@@ -103,43 +103,43 @@ task createModInfoFile(type: JavaExec) {
 // Makes compiling also create mod info file
 classes.dependsOn("createModInfoFile")
 
-task runClient(type: JavaExec) {
+tasks.register('runClient', JavaExec) {
     group "necesse"
     description "Run client with current mod"
     dependsOn "buildModJar", "createAppID"
 
     classpath = files(gameDirectory + "/Necesse.jar")
 
-    main = "StartSteamClient"
+    mainClass = "StartSteamClient"
     jvmArgs "-Xms512m", "-Xmx4G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
     args "-dev", "-mod \"${buildLocation}\""
 }
 
-task runDevClient(type: JavaExec) {
+tasks.register('runDevClient', JavaExec) {
     group "necesse"
     description "Run client with current mod"
     dependsOn "buildModJar", "createAppID"
 
     classpath = files(gameDirectory + "/Necesse.jar")
 
-    main = "StartSteamClient"
+    mainClass = "StartSteamClient"
     jvmArgs "-Xms512m", "-Xmx4G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
     args "-dev 1", "-mod \"${buildLocation}\""
 }
 
-task runServer(type: JavaExec) {
+tasks.register('runServer', JavaExec) {
     group "necesse"
     description "Run server with current mod"
     dependsOn "buildModJar"
 
     classpath = files(gameDirectory + "/Server.jar")
 
-    main = "StartDesktopServer"
+    mainClass = "StartDesktopServer"
     jvmArgs "-Xms512m", "-Xmx4G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
     args "-mod \"${buildLocation}\""
 }
 
-task buildModJar(type: Jar) {
+tasks.register('buildModJar', Jar) {
     group "necesse"
     description "Generates the mod jar into the build folder"
     dependsOn "classes"

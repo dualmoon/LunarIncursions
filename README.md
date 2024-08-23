@@ -1,3 +1,3 @@
-An example mod for Necesse.
+🌙 Lunar Incursions 🌙
 
-Check out the [modding wiki page](https://necessewiki.com/Modding) for more.
+Lorem ipsum dolor sit amet. That's off the top of the dome, lads.
