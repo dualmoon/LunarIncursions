@@ -11,20 +11,22 @@ import necesse.level.maps.incursion.IncursionBiome;
 
 public class LabyrinthIncursionLevel extends IncursionLevel {
 
-    public LabyrinthIncursionLevel(LevelIdentifier levelIdentifier, int width, int height, WorldEntity worldEntity) {
+    private final LabyrinthMazeGenerator maze;
+
+    public LabyrinthIncursionLevel(LevelIdentifier levelIdentifier, int width, int height, WorldEntity worldEntity, LabyrinthMazeGenerator maze) {
         super(levelIdentifier, width, height, worldEntity);
+        this.maze = maze;
     }
 
     public LabyrinthIncursionLevel(LevelIdentifier identifier, BiomeMissionIncursionData incursion, WorldEntity worldEntity) {
         super(identifier, 300, 300, incursion, worldEntity);
         this.biome = BiomeRegistry.getBiome("labyrinthbiome");
         this.isCave = true;
+        this.maze = new LabyrinthMazeGenerator(300, 300, true, 2); // 20x20 maze with a center-started room of size 5x5
         this.generateLevel(incursion);
     }
 
     public void generateLevel(BiomeMissionIncursionData incursionData) {
-        LabyrinthMazeGenerator maze = new LabyrinthMazeGenerator(200, 200, true, 10); // Start at center
-        maze.printMaze();
 
         GameRandom random = new GameRandom(this.getSeed());
 

@@ -95,14 +95,14 @@ public class LabyrinthMazeGenerator {
     public void printMaze() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                System.out.print(maze[i][j] == 0 ? "  " : "█");
+                System.out.print(maze[i][j] == 0 ? "🟫" : "✖️");
             }
             System.out.println();
         }
     }
 
     public static void main(String[] args) {
-        LabyrinthMazeGenerator maze = new LabyrinthMazeGenerator(20, 20, true, 5); // 20x20 maze with a center-started room of size 5x5
+        LabyrinthMazeGenerator maze = new LabyrinthMazeGenerator(300, 300, true, 2); // 20x20 maze with a center-started room of size 5x5
         maze.printMaze();
     }
 }
