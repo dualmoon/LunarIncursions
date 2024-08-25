@@ -6,7 +6,6 @@ import necesse.engine.util.GameRandom;
 import necesse.engine.util.LevelIdentifier;
 import necesse.engine.util.TicketSystemList;
 import necesse.engine.world.WorldEntity;
-import necesse.entity.mobs.Mob;
 import necesse.inventory.InventoryItem;
 import necesse.inventory.item.Item;
 import necesse.inventory.item.miscItem.GatewayTabletItem;
@@ -33,11 +32,11 @@ public class LabyrinthIncursionBiome extends IncursionBiome {
     }
 
     public LootTable getHuntDrop(IncursionData incursionData) {
-        return new LootTable(new LootItemInterface[]{new ChanceLootItem(0.66F, "ectoplasm")});
+        return new LootTable(new ChanceLootItem(0.66F, "ectoplasm"));
     }
 
     public LootTable getBossDrop(final IncursionData incursionData) {
-        return new LootTable(new LootItemInterface[]{LootItem.between("shadowessence", 20, 25), new LootItemInterface() {
+        return new LootTable(LootItem.between("shadowessence", 20, 25), new LootItemInterface() {
             @Override
             public void addPossibleLoot(LootList lootList, Object... objects) {
                 InventoryItem gatewayTablet = new InventoryItem("gatewaytablet");
@@ -51,22 +50,18 @@ public class LabyrinthIncursionBiome extends IncursionBiome {
                 GatewayTabletItem.initializeGatewayTablet(gatewayTablet, gameRandom, LabyrinthIncursionBiome.this.increaseTabletTierByX(incursionData.getTabletTier(), 1));
                 list.add(gatewayTablet);
             }
-        }});
+        });
     }
 
     public TicketSystemList<Supplier<IncursionData>> getAvailableIncursions(int tabletTier) {
         TicketSystemList<Supplier<IncursionData>> system = new TicketSystemList<>();
-        system.addObject(100, () -> {
-            return new BiomeHuntIncursionData(1.0F, this, tabletTier);
-        });
-        system.addObject(100, () -> {
-            return new BiomeExtractionIncursionData(1.0F, this, tabletTier);
-        });
+        system.addObject(100, () -> new BiomeHuntIncursionData(1.0F, this, tabletTier));
+        system.addObject(100, () -> new BiomeExtractionIncursionData(1.0F, this, tabletTier));
         return system;
     }
 
     public IncursionLevel getNewIncursionLevel(LevelIdentifier identifier, BiomeMissionIncursionData incursion, Server server, WorldEntity worldEntity) {
-        return new LabyrinthIncursionLevel(identifier, incursion, worldEntity);
+        return new LabyrinthIncursionLevel(identifier, worldEntity);
     }
 
 
@@ -79,10 +74,5 @@ public class LabyrinthIncursionBiome extends IncursionBiome {
         gatewayColors.add(new Color(102, 255, 255));
         gatewayColors.add(new Color(236, 240, 255));
         return gatewayColors;
-    }
-
-    public LootTable getExtraIncursionsDrops(Mob mob) {
-        LootTable mobDrops = super.getExtraIncursionDrops(mob);
-        return mob.isBoss() ? new LootTable(new LootItemInterface[]{mobDrops, new LootItem("shadowessence", 1)}) : mobDrops;
     }
 }

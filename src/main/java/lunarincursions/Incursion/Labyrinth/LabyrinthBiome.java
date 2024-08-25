@@ -3,7 +3,6 @@ package lunarincursions.Incursion.Labyrinth;
 import necesse.engine.AbstractMusicList;
 import necesse.engine.MusicList;
 import necesse.engine.registries.MusicRegistry;
-import necesse.engine.sound.GameMusic;
 import necesse.entity.mobs.PlayerMob;
 import necesse.level.maps.Level;
 import necesse.level.maps.biomes.Biome;
@@ -25,7 +24,7 @@ public class LabyrinthBiome extends Biome {
     }
 
     public AbstractMusicList getLevelMusic(Level level, PlayerMob perspective) {
-        return new MusicList(new GameMusic[]{MusicRegistry.SecretsOfTheForest});
+        return new MusicList(MusicRegistry.SecretsOfTheForest);
     }
 
     static {

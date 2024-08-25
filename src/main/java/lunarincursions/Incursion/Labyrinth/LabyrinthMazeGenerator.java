@@ -10,66 +10,48 @@ public class LabyrinthMazeGenerator {
     private final int[] DX = {1, -1, 0, 0};
     private final int[] DY = {0, 0, 1, -1};
 
-    public LabyrinthMazeGenerator(int width, int height, boolean startAtCenter, int roomSize) {
+    public LabyrinthMazeGenerator(int width, int height, boolean startAtCenter) {
         this.width = width;
         this.height = height;
         this.maze = new int[height][width];
-        generateMaze(startAtCenter, roomSize);
+        generateMaze(startAtCenter);
     }
 
-    private void generateMaze(boolean startAtCenter, int roomSize) {
+    private void generateMaze(boolean startAtCenter) {
         // Initialize the grid with walls (1) everywhere
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                maze[i][j] = 1;
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < width; y++) {
+                maze[x][y] = 1;
             }
         }
 
         // Determine starting position
         int startX, startY;
         if (startAtCenter) {
-            startX = (width % 2 == 1) ? width / 2 : (width / 2) - 1;
-            startY = (height % 2 == 1) ? height / 2 : (height / 2) - 1;
+            startX = width / 2;
+            startY = height / 2;
         } else {
             startX = 1;
             startY = 1;
         }
+        maze[startY][startX] = 0; // Start carving path from this point
 
-        // Create starting room if roomSize > 1
-        if (roomSize > 1) {
-            createRoom(startX, startY, roomSize);
-        } else {
-            maze[startY][startX] = 0; // Start carving path from this point
-        }
+        // Use a stack to implement breadth-first recursive backtracking
+        Deque<int[]> stack = new ArrayDeque<>();
+        stack.push(new int[] { startX, startY });
 
-        // Use a queue to implement breadth-first search (BFS)
-        Deque<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[] { startX, startY });
-
-        while (!queue.isEmpty()) {
-            int[] cell = queue.removeFirst();
+        while (!stack.isEmpty()) {
+            int[] cell = stack.pop();
             List<int[]> neighbors = getUnvisitedNeighbors(cell[0], cell[1]);
 
             if (!neighbors.isEmpty()) {
-                queue.addFirst(cell); // Backtrack to current cell if neighbors exist
+                stack.push(cell); // Backtrack to current cell if neighbors exist
 
                 int[] next = neighbors.get(new Random().nextInt(neighbors.size()));
                 // Remove the wall between current cell and chosen neighbor
                 maze[next[1]][next[0]] = 0;
                 maze[(cell[1] + next[1]) / 2][(cell[0] + next[0]) / 2] = 0;
-                queue.addFirst(next); // Add the chosen neighbor to the queue
-            }
-        }
-    }
-
-    private void createRoom(int centerX, int centerY, int roomSize) {
-        int halfSize = roomSize / 2;
-
-        for (int y = centerY - halfSize; y <= centerY + halfSize; y++) {
-            for (int x = centerX - halfSize; x <= centerX + halfSize; x++) {
-                if (isInBounds(x, y)) {
-                    maze[y][x] = 0; // Clear the room
-                }
+                stack.push(next); // Add the chosen neighbor to the stack
             }
         }
     }
@@ -93,16 +75,21 @@ public class LabyrinthMazeGenerator {
     }
 
     public void printMaze() {
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                System.out.print(maze[i][j] == 0 ? "🟫" : "✖️");
+        for (int x = 0; x < height; x++) {
+            for (int y = 0; y < width; y++) {
+                System.out.print(maze[x][y] == 0 ? "🟫" : "✖️");
             }
             System.out.println();
         }
     }
 
+    public int getTile(int x, int y) {
+        return maze[x][y];
+    }
+
+    // this is for testing 🥴
     public static void main(String[] args) {
-        LabyrinthMazeGenerator maze = new LabyrinthMazeGenerator(300, 300, true, 2); // 20x20 maze with a center-started room of size 5x5
+        LabyrinthMazeGenerator maze = new LabyrinthMazeGenerator(20, 20, true); // 20x20 maze starting at center
         maze.printMaze();
     }
 }
