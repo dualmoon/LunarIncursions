@@ -22,7 +22,6 @@ public class LabyrinthIncursionLevel extends IncursionLevel {
 
     public void generateLevel() {
         LabyrinthMazeGenerator maze = new LabyrinthMazeGenerator(this.width, this.height, true);
-        GameRandom random = new GameRandom(this.getSeed());
         int cryptAshID = TileRegistry.getTileID("cryptash");
         int deepRockID = TileRegistry.getTileID("deeprocktile");
         for(int tileX = 0; tileX < this.width; ++tileX) {
@@ -30,6 +29,6 @@ public class LabyrinthIncursionLevel extends IncursionLevel {
                 this.setTile(tileX, tileY, (maze.getTile(tileX, tileY) == 0 ? cryptAshID : deepRockID));
             }
         }
-        IncursionBiome.generateEntrance(this, random, this.width / 2, this.height / 2, 30, cryptAshID, "cryptpath", null, "cryptcolumn");
+        IncursionBiome.generateEntrance(this, GameRandom.globalRandom, this.width / 2, this.height / 2, 30, cryptAshID, "cryptpath", null, "cryptcolumn");
     }
 }
